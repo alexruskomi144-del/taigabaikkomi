@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TBK | Весна 2026 — Taiga Bike Комьюнити</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #eef4ff;
+            font-family: 'Exo 2', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ЦВЕТОВЫЕ ТЕМЫ */
+        body.theme-dark {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: rgba(20, 20, 20, 0.85);
+            --bg-card-solid: #1e1e1e;
+            --accent: #39ff14;
+            --accent-glow: #39ff14;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border: rgba(255, 255, 255, 0.08);
+            --sidebar-bg: rgba(15, 15, 15, 0.95);
+            --card-hover: rgba(57, 255, 20, 0.08);
+            --input-bg: #2a2a2a;
+            --notification-bg: #1a1a1a;
+        }
+
+        body.theme-light {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-solid: #ffffff;
+            --accent: #228b22;
+            --accent-glow: #32cd32;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --border: rgba(0, 0, 0, 0.08);
+            --sidebar-bg: rgba(245, 245, 245, 0.95);
+            --card-hover: rgba(34, 139, 34, 0.08);
+            --input-bg: #e8e8e8;
+            --notification-bg: #ffffff;
+        }
+
+        body.theme-spring {
+            --bg-primary: #0a2a1a;
+            --bg-secondary: #1a3a25;
+            --bg-card: rgba(30, 60, 35, 0.85);
+            --bg-card-solid: #2a4a2a;
+            --accent: #7cfc00;
+            --accent-glow: #befa72;
+            --text-primary: #eef4ff;
+            --text-secondary: #b8d4a0;
+            --border: rgba(124, 252, 0, 0.15);
+            --sidebar-bg: rgba(20, 45, 20, 0.92);
+            --card-hover: rgba(124, 252, 0, 0.12);
+            --input-bg: #1a3a1a;
+            --notification-bg: #1a3a25;
+        }
+
+        body.theme-ocean {
+            --bg-primary: #0a1628;
+            --bg-secondary: #0d1f3a;
+            --bg-card: rgba(15, 35, 55, 0.85);
+            --bg-card-solid: #1a2a4a;
+            --accent: #00bfff;
+            --accent-glow: #00bfff;
+            --text-primary: #ffffff;
+            --text-secondary: #a8d0e6;
+            --border: rgba(0, 191, 255, 0.12);
+            --sidebar-bg: rgba(10, 25, 45, 0.92);
+            --card-hover: rgba(0, 191, 255, 0.1);
+            --input-bg: #0a1a3a;
+            --notification-bg: #0d1f3a;
+        }
+
+        body.theme-sunset {
+            --bg-primary: #2a0a15;
+            --bg-secondary: #3a1520;
+            --bg-card: rgba(55, 30, 40, 0.85);
+            --bg-card-solid: #3a202a;
+            --accent: #ff6b35;
+            --accent-glow: #ff8c42;
+            --text-primary: #ffffff;
+            --text-secondary: #f0c0a0;
+            --border: rgba(255, 107, 53, 0.12);
+            --sidebar-bg: rgba(45, 20, 30, 0.92);
+            --card-hover: rgba(255, 107, 53, 0.1);
+            --input-bg: #2a1520;
+            --notification-bg: #3a1520;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Auth Screens */
+        #auth-screen, #age-verification-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .auth-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border-radius: 48px;
+            padding: 40px;
+            width: 90%;
+            max-width: 520px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .auth-logo { text-align: center; margin-bottom: 32px; }
+        .auth-logo h1 { font-size: 42px; font-weight: 900; }
+        .auth-logo span { color: var(--accent); }
+
+        .auth-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.2s;
+            color: var(--text-secondary);
+        }
+        .auth-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 16px;
+        }
+        .auth-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 13px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* Age Verification */
+        .age-container { text-align: center; }
+        .age-icon { font-size: 64px; margin-bottom: 20px; }
+        .age-input-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 24px 0;
+        }
+        .age-input-group input {
+            width: 80px;
+            padding: 14px;
+            text-align: center;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .warning-text {
+            background: rgba(255, 68, 68, 0.15);
+            border: 1px solid #ff4444;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        /* Hero Section */
+        #main-hero {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            z-index: 20;
+            transition: opacity 0.5s ease;
+        }
+
+        .particles-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--accent) 1px, transparent 1px);
+            background-size: 55px 55px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .hero-container {
+            width: 90%;
+            max-width: 1300px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            z-index: 5;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 60px;
+            padding: 40px 60px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .hero-left { flex: 1.2; }
+        .hero-right { flex: 1; display: flex; justify-content: center; }
+
+        .season-tag {
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: 3px;
+            background: var(--card-hover);
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 60px;
+            border-left: 3px solid var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .main-title {
+            font-size: 85px;
+            font-weight: 900;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin: 20px 0;
+        }
+        .main-title span { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 25px 0 40px;
+            border-left: 3px solid var(--accent);
+            padding-left: 22px;
+        }
+
+        .btn-spring {
+            background: linear-gradient(95deg, var(--accent), var(--accent-glow));
+            border: none;
+            color: var(--bg-primary);
+            font-weight: 900;
+            padding: 14px 44px;
+            font-size: 1.1rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-spring:hover { transform: translateY(-4px); filter: brightness(1.1); }
+
+        .bike-illustration {
+            width: 100%;
+            max-width: 580px;
+            filter: drop-shadow(0 0 35px var(--accent-glow));
+            animation: floatBike 5s ease infinite;
+        }
+        @keyframes floatBike { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+
+        /* Intro */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(12px);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .intro-logo {
+            font-size: 70px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 6px;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        /* Dashboard */
+        #dashboard {
+            display: none;
+            height: 100vh;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+        .dashboard-layout { display: flex; height: 100%; width: 100%; }
+
+        /* Sidebar */
+        .sidebar-nav {
+            width: 280px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 28px 0 30px 0;
+            flex-shrink: 0;
+        }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        .sidebar-header { padding: 0 24px 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
+        .sidebar-header h3 { font-size: 24px; font-weight: 800; }
+        .sidebar-header span { color: var(--accent); }
+
+        .online-status { font-size: 12px; color: var(--accent); margin-top: 8px; display: flex; align-items: center; gap: 8px; }
+        .online-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        .nav-menu { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 0 16px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-item i { width: 24px; font-size: 1.1rem; text-align: center; }
+        .nav-item:hover { background: var(--card-hover); color: var(--accent); transform: translateX(3px); }
+        .nav-active {
+            background: linear-gradient(90deg, var(--card-hover), transparent);
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+            border-radius: 14px 0 0 14px;
+        }
+
+        .support-btn {
+            margin: 20px 16px 0 16px;
+            background: var(--card-hover);
+            border: 1px solid var(--accent);
+            border-radius: 40px;
+            padding: 12px;
+            text-align: center;
+            font-weight: 800;
+            color: var(--accent);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .support-btn:hover { background: var(--accent); color: var(--bg-primary); }
+
+        /* Topbar */
+        .user-topbar {
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(12px);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 150;
+        }
+        .user-info { display: flex; align-items: center; gap: 16px; cursor: pointer; position: relative; }
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(145deg, var(--accent), var(--accent-glow));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--bg-primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .user-details h4 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+        .user-details p { font-size: 12px; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .user-actions { display: flex; gap: 24px; align-items: center; position: relative; }
+        .user-actions i { font-size: 20px; color: var(--text-secondary); cursor: pointer; transition: 0.2s; }
+        .user-actions i:hover { color: var(--accent); transform: scale(1.1); }
+        .level-badge { background: var(--card-hover); border-radius: 30px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: var(--accent); border: 1px solid var(--border); }
+
+        /* NOTIFICATIONS PANEL (КОЛОКОЛЬЧИК) */
+        .notifications-panel {
+            position: absolute;
+            top: 55px;
+            right: 70px;
+            width: 380px;
+            max-height: 500px;
+            background: var(--notification-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+        .notifications-panel.show { display: flex; animation: fadeIn 0.2s ease; }
+        .notif-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notif-header span { color: var(--accent); }
+        .mark-read { font-size: 12px; cursor: pointer; color: var(--accent); }
+        .notif-list { overflow-y: auto; max-height: 420px; }
+        .notif-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .notif-item:hover { background: var(--card-hover); }
+        .notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card-hover); color: var(--accent); }
+        .notif-content { flex: 1; }
+        .notif-title { font-weight: 600; margin-bottom: 4px; }
+        .notif-text { font-size: 12px; color: var(--text-secondary); }
+        .notif-time { font-size: 10px; color: var(--text-secondary); margin-top: 5px; }
+        .notif-unread { background: var(--card-hover); border-left: 3px solid var(--accent); }
+        .notif-empty { padding: 40px; text-align: center; color: var(--text-secondary); }
+
+        /* Badge для колокольчика */
+        .bell-icon { position: relative; }
+        .notif-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: absolute;
+            top: 55px;
+            right: 130px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 260px;
+            z-index: 200;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: none;
+        }
+        .settings-panel.show { display: block; animation: fadeIn 0.2s ease; }
+        .settings-header { padding: 15px 20px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--accent); }
+        .theme-option {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.15s;
+            border-bottom: 1px solid var(--border);
+        }
+        .theme-option:hover { background: var(--card-hover); }
+        .theme-color { width: 20px; height: 20px; border-radius: 50%; }
+        .theme-color.dark { background: #1a1a1a; border: 1px solid #39ff14; }
+        .theme-color.light { background: #f5f5f5; border: 1px solid #228b22; }
+        .theme-color.spring { background: #2a6b2a; border: 1px solid #7cfc00; }
+        .theme-color.ocean { background: #0a3a5a; border: 1px solid #00bfff; }
+        .theme-color.sunset { background: #cc5533; border: 1px solid #ff8c42; }
+
+        /* Dropdown */
+        .profile-dropdown {
+            position: absolute;
+            top: 55px;
+            left: 28px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 240px;
+            z-index: 200;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: none;
+        }
+        .profile-dropdown.show { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-item {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.15s;
+            border-bottom: 1px solid var(--border);
+        }
+        .dropdown-item i { width: 22px; color: var(--accent); }
+        .dropdown-item:hover { background: var(--card-hover); color: var(--text-primary); }
+
+        /* Main Content */
+        .main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .content-inner { padding: 28px 36px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+        .simple-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+        }
+        .section-title { font-size: 28px; font-weight: 700; margin-bottom: 24px; color: var(--accent); display: flex; align-items: center; gap: 15px; }
+        .stat-number-new { font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; }
+        
+        .section-page { display: none; animation: slideUp 0.4s ease-out; }
+        .section-page.active-section { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .level-bar { background: var(--border); border-radius: 10px; height: 10px; overflow: hidden; margin: 15px 0; }
+        .level-progress { background: var(--accent); height: 100%; width: 0%; border-radius: 10px; }
+
+        .grid-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .item-card {
+            background: var(--bg-card-solid);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+        }
+        .item-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .item-card h5 { font-size: 18px; color: var(--accent); margin-bottom: 10px; }
+        .item-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+        .badge-small { background: var(--card-hover); padding: 4px 10px; border-radius: 30px; font-size: 11px; color: var(--accent); display: inline-block; margin-top: 10px; }
+
+        .profile-info-row {
+            display: flex;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .profile-label { width: 130px; color: var(--text-secondary); }
+        .profile-value { flex: 1; font-weight: 500; }
+
+        @media (max-width: 800px) {
+            .sidebar-nav { width: 70px; }
+            .sidebar-nav span, .sidebar-nav .sidebar-header h3, .sidebar-nav .nav-item span { display: none; }
+            .nav-item { justify-content: center; padding: 15px 0; }
+            .sidebar-header { padding: 10px; text-align: center; }
+            .content-inner { padding: 20px; }
+            .main-title { font-size: 48px; }
+            .hero-container { flex-direction: column; text-align: center; padding: 30px; }
+            .form-row { grid-template-columns: 1fr; }
+            .notifications-panel { width: 320px; right: 10px; }
+            .settings-panel { right: 60px; }
+        }
+    </style>
+</head>
+<body class="theme-dark">
+
+    <!-- ЭКРАН РЕГИСТРАЦИИ/ВХОДА -->
+    <div id="auth-screen">
+        <div class="auth-container">
+            <div class="auth-logo"><h1>TAIGA <span>BIKE</span></h1><p style="margin-top: 10px;">Весенний сезон 2026</p></div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Вход</div>
+                <div class="auth-tab" data-tab="register">Регистрация</div>
+            </div>
+            <div id="login-form" class="auth-form active">
+                <div class="input-group"><label>📧 Email или логин</label><input type="text" id="loginUsername" placeholder="Введите email или логин"></div>
+                <div class="input-group"><label>🔒 Пароль</label><input type="password" id="loginPassword" placeholder="Введите пароль"></div>
+                <button class="auth-btn" onclick="handleLogin()">Войти в сообщество</button>
+                <div id="loginError" class="error-message"></div>
+            </div>
+            <div id="register-form" class="auth-form">
+                <div class="form-row">
+                    <div class="input-group"><label>👤 Имя</label><input type="text" id="regFirstName" placeholder="Иван"></div>
+                    <div class="input-group"><label>👤 Фамилия</label><input type="text" id="regLastName" placeholder="Иванов"></div>
+                </div>
+                <div class="input-group"><label>🏷️ Логин (никнейм)</label><input type="text" id="regUsername" placeholder="ivan_cyclist"></div>
+                <div class="input-group"><label>📧 Email</label><input type="email" id="regEmail" placeholder="ivan@example.com"></div>
+                <div class="form-row">
+                    <div class="input-group"><label>📅 Дата рождения</label><input type="date" id="regBirthDate"></div>
+                    <div class="input-group"><label>🚻 Пол</label><select id="regGender"><option value="Мужской">Мужской</option><option value="Женский">Женский</option></select></div>
+                </div>
+                <div class="input-group"><label>📍 Город</label><input type="text" id="regCity" placeholder="Сыктывкар"></div>
+                <div class="form-row">
+                    <div class="input-group"><label>🔒 Пароль</label><input type="password" id="regPassword" placeholder="Придумайте пароль"></div>
+                    <div class="input-group"><label>🔒 Подтверждение</label><input type="password" id="regPasswordConfirm" placeholder="Повторите пароль"></div>
+                </div>
+                <button class="auth-btn" onclick="handleRegister()">Зарегистрироваться</button>
+                <div id="registerError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ПРОВЕРКИ ВОЗРАСТА -->
+    <div id="age-verification-screen" style="display: none;">
+        <div class="auth-container age-container">
+            <div class="age-icon">🚲</div>
+            <h2>Подтверждение возраста</h2>
+            <p style="margin: 15px 0; color: var(--text-secondary);">Для участия в сообществе Taiga Bike необходимо подтвердить возраст</p>
+            <div class="age-input-group">
+                <input type="number" id="ageDay" placeholder="ДД" min="1" max="31">
+                <input type="number" id="ageMonth" placeholder="ММ" min="1" max="12">
+                <input type="number" id="ageYear" placeholder="ГГГГ" min="1900" max="2026">
+            </div>
+            <div class="warning-text">⚠️ Возрастные ограничения:<br>• Младше 16 лет — доступ запрещён<br>• 16–17 лет — доступ с согласия родителей<br>• 18–20 лет — полный доступ<br>• Старше 20 лет — полный доступ</div>
+            <button class="auth-btn" onclick="verifyAge()">Подтвердить возраст</button>
+            <div id="ageError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Hero Screen -->
+    <section id="main-hero" style="display: none;">
+        <div class="particles-bg"></div>
+        <div class="hero-container">
+            <div class="hero-left">
+                <div class="season-tag"><i class="fas fa-seedling"></i> ВЕСЕННИЙ СЕЗОН 2026</div>
+                <h1 class="main-title">TAIGA<br><span>BIKE</span></h1>
+                <div class="hero-desc">Официальное сообщество Сыктывкара. Открытие сезона, групповые заезды и вело-культура.</div>
+                <div style="margin-top: 25px;"><a href="https://vk.com/tbk11" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">МЫ В ВКОНТАКТЕ <i class="fas fa-external-link-alt"></i></a></div>
+            </div>
+            <div class="hero-right">
+                <svg viewBox="0 0 500 300" class="bike-illustration">
+                    <circle cx="100" cy="200" r="60" fill="none" stroke="var(--accent)" stroke-width="8" />
+                    <circle cx="400" cy="200" r="60" fill="none" stroke="var(--accent)" stroke-width="8" />
+                    <path d="M100 200 L180 80 L350 80 L400 200" fill="none" stroke="var(--accent)" stroke-width="8" />
+                    <path d="M180 80 L230 200 L350 80" fill="none" stroke="var(--accent)" stroke-width="8" />
+                    <path d="M350 80 L370 40 L410 40" fill="none" stroke="var(--accent)" stroke-width="8" />
+                    <circle cx="180" cy="80" r="10" fill="var(--accent)" />
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intro Overlay -->
+    <div id="intro-overlay"><div id="introLogo" class="intro-logo">TBK: SPRING 2026</div></div>
+
+    <!-- Dashboard -->
+    <section id="dashboard" style="display: none;">
+        <div class="dashboard-layout">
+            <div class="sidebar-nav">
+                <div class="sidebar-header"><h3>TAIGA <span>BIKE</span></h3><div class="online-status"><span class="online-dot"></span> <span>Онлайн: 25 райдеров</span></div></div>
+                <div class="nav-menu">
+                    <div class="nav-item nav-active" data-page="home"><i class="fas fa-home"></i> <span>Главная</span></div>
+                    <div class="nav-item" data-page="school"><i class="fas fa-graduation-cap"></i> <span>Вело-школа</span></div>
+                    <div class="nav-item" data-page="groups"><i class="fas fa-users"></i> <span>Вело-группы</span></div>
+                    <div class="nav-item" data-page="exchange"><i class="fas fa-road"></i> <span>Биржа маршрутов</span></div>
+                    <div class="nav-item" data-page="trips"><i class="fas fa-bicycle"></i> <span>Поездки</span></div>
+                    <div class="nav-item" data-page="convoys"><i class="fas fa-flag-checkered"></i> <span>Конвои</span></div>
+                    <div class="nav-item" data-page="urgent"><i class="fas fa-bolt"></i> <span>Срочные заезды</span></div>
+                    <div class="nav-item" data-page="maps"><i class="fas fa-map-marked-alt"></i> <span>Карты трасс</span></div>
+                    <div class="nav-item" data-page="garage"><i class="fas fa-warehouse"></i> <span>Гараж</span></div>
+                    <div class="nav-item" data-page="shop"><i class="fas fa-store"></i> <span>Магазин</span></div>
+                    <div class="nav-item" data-page="ratings"><i class="fas fa-chart-line"></i> <span>Рейтинги</span></div>
+                    <div class="nav-item" data-page="finance"><i class="fas fa-coins"></i> <span>Финансы</span></div>
+                </div>
+                <div class="support-btn" onclick="showSection('finance')"><i class="fas fa-heart"></i> <span>Поддержать клуб</span></div>
+            </div>
+
+            <div class="main-content">
+                <div class="user-topbar">
+                    <div class="user-info" id="userInfoBtn">
+                        <div class="user-avatar" id="topbarAvatar">👤</div>
+                        <div class="user-details"><h4 id="topbarName">Райдер</h4><p><i class="fas fa-bicycle"></i> Райдер · 1-й уровень</p></div>
+                    </div>
+                    <div class="user-actions">
+                        <div class="level-badge"><i class="fas fa-star"></i> Lvl 1</div>
+                        <div class="bell-icon" id="bellIcon">
+                            <i class="fas fa-bell"></i>
+                            <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                        </div>
+                        <i class="fas fa-cog settings-icon" id="settingsBtn"></i>
+                        <i class="fas fa-sign-out-alt logout-action"></i>
+                    </div>
+
+                    <!-- Панель уведомлений -->
+                    <div class="notifications-panel" id="notificationsPanel">
+                        <div class="notif-header">
+                            <span><i class="fas fa-bell"></i> Уведомления</span>
+                            <span class="mark-read" onclick="markAllRead()">Прочитать всё</span>
+                        </div>
+                        <div class="notif-list" id="notifList">
+                            <!-- Уведомления будут добавлены динамически -->
+                        </div>
+                    </div>
+
+                    <div class="settings-panel" id="settingsPanel">
+                        <div class="settings-header"><i class="fas fa-palette"></i> Выберите тему</div>
+                        <div class="theme-option" data-theme="dark"><div class="theme-color dark"></div> Тёмная (классика)</div>
+                        <div class="theme-option" data-theme="light"><div class="theme-color light"></div> Светлая</div>
+                        <div class="theme-option" data-theme="spring"><div class="theme-color spring"></div> Весенняя 🌸</div>
+                        <div class="theme-option" data-theme="ocean"><div class="theme-color ocean"></div> Океанская 🌊</div>
+                        <div class="theme-option" data-theme="sunset"><div class="theme-color sunset"></div> Закатная 🌅</div>
+                    </div>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="dropdown-item" data-profile="profile"><i class="fas fa-user-circle"></i> Профиль</div>
+                        <div class="dropdown-item" data-profile="rank"><i class="fas fa-medal"></i> Мой ранг</div>
+                        <div class="dropdown-item" data-profile="inventory"><i class="fas fa-backpack"></i> Инвентарь</div>
+                        <div class="dropdown-item" data-profile="referrals"><i class="fas fa-users"></i> Вело-рефералы</div>
+                        <div class="dropdown-item" data-profile="reviews"><i class="fas fa-star"></i> Отзывы</div>
+                        <div class="dropdown-item logout-action"><i class="fas fa-sign-out-alt"></i> Выйти</div>
+                    </div>
+                </div>
+
+                <div class="content-inner">
+                    <!-- ГЛАВНАЯ -->
+                    <div id="home-page" class="section-page active-section">
+                        <div class="simple-card">
+                            <div class="section-title"><i class="fas fa-home"></i> Главная</div>
+                            <div style="text-align: center; padding: 20px;">
+                                <div class="stat-number-new" style="font-size: 64px;">0</div>
+                                <p style="margin: 10px 0;">Завершённых поездок</p>
+                                <div class="stat-number-new" style="font-size: 32px;">0 км</div>
+                                <p style="margin: 10px 0;">Общая дистанция</p>
+                                <div class="stat-number-new" style="font-size: 32px;">0</div>
+                                <p>Очков рейтинга</p>
+                                <div class="level-bar" style="max-width: 300px; margin: 20px auto;"><div class="level-progress" style="width: 0%;"></div></div>
+                                <p>1 уровень | 0 / 1000 очков</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Остальные разделы (содержание такое же, как в предыдущей версии) -->
+                    <div id="school-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-graduation-cap"></i> Вело-школа</div><div class="grid-list"><div class="item-card"><h5>📚 Основы безопасности</h5><p>ПДД, жесты, защита.</p><span class="badge-small">Бесплатно</span></div><div class="item-card"><h5>🔧 Техническое ТО</h5><p>Ремонт, настройка.</p><span class="badge-small">3 урока</span></div></div></div></div>
+                    <div id="groups-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-users"></i> Вело-группы</div><div class="grid-list"><div class="item-card"><h5>🚀 Шоссейная группа</h5><p>34 участника</p></div><div class="item-card"><h5>🌲 MTB-команда</h5><p>42 участника</p></div></div></div></div>
+                    <div id="exchange-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-road"></i> Биржа маршрутов</div><div class="grid-list"><div class="item-card"><h5>🌲 Тайга Трейл</h5><p>45 км | Сложная</p></div><div class="item-card"><h5>🏞️ Велонабережная</h5><p>18 км | Лёгкая</p></div></div></div></div>
+                    <div id="trips-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-bicycle"></i> Поездки</div><p>У вас пока нет завершённых поездок.</p></div></div>
+                    <div id="convoys-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-flag-checkered"></i> Конвои</div><div class="grid-list"><div class="item-card"><h5>🚩 Весенний конвой 2026</h5><p>15 мая | 10:00</p></div><div class="item-card"><h5>🌸 Еженедельная покатушка</h5><p>Каждую субботу</p></div></div></div></div>
+                    <div id="urgent-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-bolt"></i> Срочные заезды</div><div class="grid-list"><div class="item-card"><h5>🔴 Вело-курьер</h5><p>200 очков</p></div></div></div></div>
+                    <div id="maps-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-map-marked-alt"></i> Карты трасс</div><p>📍 Парк им.Кирова, Лесопарк, набережная</p></div></div>
+                    <div id="garage-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-warehouse"></i> Гараж</div><p>🚲 Стартовый велосипед</p></div></div>
+                    <div id="shop-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-store"></i> Магазин</div><div class="grid-list"><div class="item-card"><h5>Шлем "Taiga Carbon"</h5><span class="badge-small">2500 коинов</span></div><div class="item-card"><h5>Джерси "Spring 2026"</h5><span class="badge-small">1500 коинов</span></div></div></div></div>
+                    <div id="ratings-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-chart-line"></i> Рейтинги</div><div class="item-card"><h5>🥇 FuriousPetr</h5><p>3,420 очков</p></div><div class="item-card"><h5>🥈 ElenaBike</h5><p>2,980 очков</p></div></div></div>
+                    <div id="finance-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-coins"></i> Финансы</div><p>💰 Баланс: 0 коинов</p></div></div>
+                    <div id="rank-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-medal"></i> Мой ранг</div><div style="text-align:center;"><div class="stat-number-new">1 уровень</div><div class="level-bar"><div class="level-progress" style="width:0%"></div></div><p>0 / 1000 очков</p></div></div></div>
+                    <div id="inventory-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-backpack"></i> Инвентарь</div><div class="item-card"><h5>🚲 Стартовый велосипед</h5></div></div></div>
+                    <div id="referrals-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-users"></i> Вело-рефералы</div><p>Приглашено друзей: 0</p><button class="btn-spring" style="margin-top:15px;"><i class="fas fa-share-alt"></i> Пригласить</button></div></div>
+                    <div id="reviews-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-star"></i> Отзывы</div><div class="item-card"><h5>⭐ ⭐ ⭐ ⭐ ⭐</h5><p>"Лучшее сообщество!"</p></div></div></div>
+
+                    <!-- ПРОФИЛЬ -->
+                    <div id="profile-page" class="section-page">
+                        <div class="simple-card">
+                            <div class="section-title"><i class="fas fa-user-circle"></i> Мой профиль</div>
+                            <div style="display: flex; align-items: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap;">
+                                <div class="user-avatar" style="width: 100px; height: 100px; font-size: 52px;">👤</div>
+                                <div><h2 id="profileFullName" style="font-size: 28px;">Райдер</h2><p><i class="fas fa-at"></i> <span id="profileUsername">@username</span></p><p><i class="fas fa-map-marker-alt"></i> <span id="profileCity">Не указан</span></p></div>
+                            </div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-user"></i> Имя</div><div class="profile-value" id="profileFirstName">—</div></div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-user"></i> Фамилия</div><div class="profile-value" id="profileLastName">—</div></div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-envelope"></i> Email</div><div class="profile-value" id="profileEmail">—</div></div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-calendar-alt"></i> Дата рождения</div><div class="profile-value" id="profileBirthDate">—</div></div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-venus-mars"></i> Пол</div><div class="profile-value" id="profileGender">—</div></div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-map-marker-alt"></i> Город</div><div class="profile-value" id="profileCityValue">—</div></div>
+                            <div class="profile-info-row"><div class="profile-label"><i class="fas fa-calendar"></i> Дата регистрации</div><div class="profile-value" id="profileRegDate">—</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // ---------- СИСТЕМА УВЕДОМЛЕНИЙ ----------
+        let notifications = [
+            { id: 1, title: "🚴 Весенний конвой 2026", text: "Присоединяйтесь к главному событию сезона 15 мая!", time: "2 часа назад", read: false, icon: "fa-flag-checkered" },
+            { id: 2, title: "🎁 Новые товары в магазине", text: "Добавлена лимитированная коллекция Spring 2026", time: "Вчера", read: false, icon: "fa-store" },
+            { id: 3, title: "🏆 Новый рекорд сезона", text: "FuriousPetr проехал 150 км за один заезд!", time: "Вчера", read: false, icon: "fa-trophy" },
+            { id: 4, title: "⚠️ Погодное предупреждение", text: "Завтра в Сыктывкаре ожидается дождь. Будьте осторожны на трассах.", time: "3 дня назад", read: true, icon: "fa-cloud-rain" },
+            { id: 5, title: "👥 Набор в вело-группы", text: "Шоссейная группа набирает участников. Присоединяйтесь!", time: "5 дней назад", read: true, icon: "fa-users" }
+        ];
+
+        function updateNotificationBadge() {
+            const unreadCount = notifications.filter(n => !n.read).length;
+            const badge = document.getElementById('notifBadge');
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notifList');
+            if (!container) return;
+            
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Нет уведомлений</p></div>';
+                return;
+            }
+            
+            container.innerHTML = notifications.map(notif => `
+                <div class="notif-item ${!notif.read ? 'notif-unread' : ''}" onclick="markNotificationRead(${notif.id})">
+                    <div class="notif-icon"><i class="fas ${notif.icon}"></i></div>
+                    <div class="notif-content">
+                        <div class="notif-title">${notif.title}</div>
+                        <div class="notif-text">${notif.text}</div>
+                        <div class="notif-time"><i class="far fa-clock"></i> ${notif.time}</div>
+                    </div>
+                </div>
+            `).join('');
+            updateNotificationBadge();
+        }
+
+        function markNotificationRead(id) {
+            const notif = notifications.find(n => n.id === id);
+            if (notif && !notif.read) {
+                notif.read = true;
+                renderNotifications();
+            }
+        }
+
+        function markAllRead() {
+            notifications.forEach(n => n.read = true);
+            renderNotifications();
+        }
+
+        // Добавление нового уведомления
+        function addNotification(title, text, icon = 'fa-bell') {
+            const newNotif = {
+                id: Date.now(),
+                title: title,
+                text: text,
+                time: 'Только что',
+                read: false,
+                icon: icon
+            };
+            notifications.unshift(newNotif);
+            renderNotifications();
+        }
+
+        // Тестовые уведомления (примеры)
+        setTimeout(() => {
+            if (document.getElementById('dashboard').style.display === 'block') {
+                addNotification('🌟 Добро пожаловать в TBK!', 'Рады видеть вас в сообществе. Начните с раздела "Вело-школа"', 'fa-hand-peace');
+            }
+        }, 3000);
+
+        // ---------- СИСТЕМА РЕГИСТРАЦИИ И ВХОДА ----------
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('tbk_users')) || [];
+
+        function saveUsers() { localStorage.setItem('tbk_users', JSON.stringify(users)); }
+
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + '-form').classList.add('active');
+                document.getElementById('loginError').textContent = '';
+                document.getElementById('registerError').textContent = '';
+            });
+        });
+
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            return age;
+        }
+
+        function handleRegister() {
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const birthDate = document.getElementById('regBirthDate').value;
+            const gender = document.getElementById('regGender').value;
+            const city = document.getElementById('regCity').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regPasswordConfirm').value;
+            const errorDiv = document.getElementById('registerError');
+
+            if (!firstName || !lastName || !username || !email || !birthDate || !city || !password) {
+                errorDiv.textContent = 'Заполните все поля';
+                return;
+            }
+            if (password !== confirm) {
+                errorDiv.textContent = 'Пароли не совпадают';
+                return;
+            }
+            if (users.find(u => u.username === username)) {
+                errorDiv.textContent = 'Имя пользователя уже занято';
+                return;
+            }
+            if (users.find(u => u.email === email)) {
+                errorDiv.textContent = 'Этот email уже зарегистрирован';
+                return;
+            }
+
+            const age = calculateAge(birthDate);
+            if (age < 16) {
+                errorDiv.textContent = '❌ Вам нет 16 лет. Доступ к сообществу запрещён.';
+                return;
+            }
+
+            const newUser = {
+                firstName, lastName, username, email, birthDate, gender, city,
+                password, age: age, ageVerified: false,
+                level: 1, points: 0, avatar: null, regDate: new Date().toLocaleDateString('ru-RU')
+            };
+            users.push(newUser);
+            saveUsers();
+            
+            errorDiv.textContent = '';
+            document.querySelector('.auth-tab[data-tab="login"]').click();
+            document.getElementById('loginUsername').value = username;
+            document.getElementById('loginError').textContent = '✅ Регистрация успешна! Теперь войдите.';
+        }
+
+        function handleLogin() {
+            const login = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            const user = users.find(u => (u.username === login || u.email === login) && u.password === password);
+            if (!user) {
+                errorDiv.textContent = 'Неверный логин или пароль';
+                return;
+            }
+
+            currentUser = user;
+            if (!user.ageVerified) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('age-verification-screen').style.display = 'flex';
+            } else {
+                completeLogin();
+            }
+        }
+
+        function verifyAge() {
+            const day = parseInt(document.getElementById('ageDay').value);
+            const month = parseInt(document.getElementById('ageMonth').value);
+            const year = parseInt(document.getElementById('ageYear').value);
+            const errorDiv = document.getElementById('ageError');
+
+            if (!day || !month || !year || day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2026) {
+                errorDiv.textContent = 'Введите корректную дату рождения';
+                return;
+            }
+
+            const today = new Date();
+            let age = today.getFullYear() - year;
+            const birthDate = new Date(year, month - 1, day);
+            if (today < new Date(year + age, month - 1, day)) age--;
+
+            if (age < 16) {
+                errorDiv.textContent = '❌ К сожалению, вам нет 16 лет. Доступ к сообществу запрещён.';
+                return;
+            }
+            if (age >= 16 && age <= 17) {
+                if (!confirm('⚠️ Вам 16-17 лет. Для участия необходимо согласие родителей. Продолжить?')) {
+                    errorDiv.textContent = 'Доступ отклонён. Необходимо согласие родителей.';
+                    return;
+                }
+            }
+
+            currentUser.age = age;
+            currentUser.ageVerified = true;
+            saveUsers();
+            document.getElementById('age-verification-screen').style.display = 'none';
+            completeLogin();
+        }
+
+        function completeLogin() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('age-verification-screen').style.display = 'none';
+            document.getElementById('main-hero').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            
+            document.getElementById('topbarName').textContent = currentUser.firstName + ' ' + currentUser.lastName.charAt(0) + '.';
+            document.getElementById('profileFullName').textContent = currentUser.firstName + ' ' + currentUser.lastName;
+            document.getElementById('profileUsername').textContent = '@' + currentUser.username;
+            document.getElementById('profileFirstName').textContent = currentUser.firstName;
+            document.getElementById('profileLastName').textContent = currentUser.lastName;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profileBirthDate').textContent = new Date(currentUser.birthDate).toLocaleDateString('ru-RU');
+            document.getElementById('profileGender').textContent = currentUser.gender;
+            document.getElementById('profileCityValue').textContent = currentUser.city;
+            document.getElementById('profileCity').textContent = currentUser.city;
+            document.getElementById('profileRegDate').textContent = currentUser.regDate;
+            
+            runSpringIntro();
+            renderNotifications();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('main-hero').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('intro-overlay').style.display = 'none';
+        }
+
+        // ---------- ОСТАЛЬНЫЕ ФУНКЦИИ ----------
+        function setTheme(theme) { document.body.className = 'theme-' + theme; localStorage.setItem('tbk_theme', theme); }
+        const savedTheme = localStorage.getItem('tbk_theme');
+        if (savedTheme && savedTheme !== 'dark') document.body.className = 'theme-' + savedTheme;
+
+        function runSpringIntro() {
+            const intro = document.getElementById('intro-overlay');
+            const logoEl = document.getElementById('introLogo');
+            intro.style.display = 'flex';
+            setTimeout(() => { logoEl.style.transition = 'all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.2)'; logoEl.style.opacity = '1'; logoEl.style.transform = 'scale(1.08)'; }, 100);
+            setTimeout(() => { intro.style.transition = 'opacity 0.6s ease'; intro.style.opacity = '0'; setTimeout(() => { intro.style.display = 'none'; document.getElementById('main-hero').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; }, 600); }, 2300);
+        }
+
+        function showSection(pageId) {
+            document.querySelectorAll('.section-page').forEach(el => el.classList.remove('active-section'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
+            const targetEl = document.getElementById(pageId + '-page');
+            if (targetEl) targetEl.classList.add('active-section');
+            const navItem = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+            if (navItem) navItem.classList.add('nav-active');
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => showSection(item.getAttribute('data-page'))); });
+
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const profilePage = item.getAttribute('data-profile');
+                if (profilePage) {
+                    const sectionMap = { profile: 'profile', rank: 'rank', inventory: 'inventory', referrals: 'referrals', reviews: 'reviews' };
+                    const page = sectionMap[profilePage];
+                    if (page) {
+                        document.querySelectorAll('.section-page').forEach(el => el.classList.remove('active-section'));
+                        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
+                        document.getElementById(page + '-page').classList.add('active-section');
+                    }
+                }
+                document.getElementById('profileDropdown').classList.remove('show');
+            });
+        });
+
+        // Колокольчик
+        const bellIcon = document.getElementById('bellIcon');
+        const notifPanel = document.getElementById('notificationsPanel');
+        if (bellIcon) {
+            bellIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifPanel.classList.toggle('show');
+            });
+        }
+
+        const userBtn = document.getElementById('userInfoBtn');
+        const dropdown = document.getElementById('profileDropdown');
+        if (userBtn) userBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('show'); });
+        
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        if (settingsBtn) settingsBtn.addEventListener('click', (e) => { e.stopPropagation(); settingsPanel.classList.toggle('show'); });
+        
+        document.addEventListener('click', () => {
+            if (dropdown) dropdown.classList.remove('show');
+            if (settingsPanel) settingsPanel.classList.remove('show');
+            if (notifPanel) notifPanel.classList.remove('show');
+        });
+
+        document.querySelectorAll('.theme-option').forEach(option => { option.addEventListener('click', () => { setTheme(option.getAttribute('data-theme')); settingsPanel.classList.remove('show'); }); });
+        document.querySelectorAll('.logout-action').forEach(btn => { btn.addEventListener('click', () => logout()); });
+    </script>
+</body>
+</html>

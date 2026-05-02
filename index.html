@@ -469,7 +469,7 @@
         .user-actions i:hover { color: var(--accent); transform: scale(1.1); }
         .level-badge { background: var(--card-hover); border-radius: 30px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: var(--accent); border: 1px solid var(--border); }
 
-        /* NOTIFICATIONS PANEL (КОЛОКОЛЬЧИК) */
+        /* NOTIFICATIONS PANEL */
         .notifications-panel {
             position: absolute;
             top: 55px;
@@ -515,7 +515,6 @@
         .notif-unread { background: var(--card-hover); border-left: 3px solid var(--accent); }
         .notif-empty { padding: 40px; text-align: center; color: var(--text-secondary); }
 
-        /* Badge для колокольчика */
         .bell-icon { position: relative; }
         .notif-badge {
             position: absolute;
@@ -642,6 +641,47 @@
         }
         .profile-label { width: 130px; color: var(--text-secondary); }
         .profile-value { flex: 1; font-weight: 500; }
+
+        /* Strava Rides Styles */
+        .strava-rides-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .ride-item {
+            background: var(--bg-card-solid);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent);
+            transition: 0.2s;
+        }
+        .ride-item:hover { transform: translateX(5px); }
+        .ride-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .ride-icon {
+            background: var(--card-hover);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ride-icon i { font-size: 24px; color: var(--accent); }
+        .ride-info { flex: 1; }
+        .ride-name { color: var(--accent); margin-bottom: 5px; font-size: 16px; font-weight: 600; }
+        .ride-stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .ride-stats span { display: flex; align-items: center; gap: 4px; }
 
         @media (max-width: 800px) {
             .sidebar-nav { width: 70px; }
@@ -776,15 +816,9 @@
                         <i class="fas fa-sign-out-alt logout-action"></i>
                     </div>
 
-                    <!-- Панель уведомлений -->
                     <div class="notifications-panel" id="notificationsPanel">
-                        <div class="notif-header">
-                            <span><i class="fas fa-bell"></i> Уведомления</span>
-                            <span class="mark-read" onclick="markAllRead()">Прочитать всё</span>
-                        </div>
-                        <div class="notif-list" id="notifList">
-                            <!-- Уведомления будут добавлены динамически -->
-                        </div>
+                        <div class="notif-header"><span><i class="fas fa-bell"></i> Уведомления</span><span class="mark-read" onclick="markAllRead()">Прочитать всё</span></div>
+                        <div class="notif-list" id="notifList"></div>
                     </div>
 
                     <div class="settings-panel" id="settingsPanel">
@@ -824,21 +858,64 @@
                         </div>
                     </div>
 
-                    <!-- Остальные разделы (содержание такое же, как в предыдущей версии) -->
-                    <div id="school-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-graduation-cap"></i> Вело-школа</div><div class="grid-list"><div class="item-card"><h5>📚 Основы безопасности</h5><p>ПДД, жесты, защита.</p><span class="badge-small">Бесплатно</span></div><div class="item-card"><h5>🔧 Техническое ТО</h5><p>Ремонт, настройка.</p><span class="badge-small">3 урока</span></div></div></div></div>
-                    <div id="groups-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-users"></i> Вело-группы</div><div class="grid-list"><div class="item-card"><h5>🚀 Шоссейная группа</h5><p>34 участника</p></div><div class="item-card"><h5>🌲 MTB-команда</h5><p>42 участника</p></div></div></div></div>
-                    <div id="exchange-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-road"></i> Биржа маршрутов</div><div class="grid-list"><div class="item-card"><h5>🌲 Тайга Трейл</h5><p>45 км | Сложная</p></div><div class="item-card"><h5>🏞️ Велонабережная</h5><p>18 км | Лёгкая</p></div></div></div></div>
-                    <div id="trips-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-bicycle"></i> Поездки</div><p>У вас пока нет завершённых поездок.</p></div></div>
+                    <!-- ВЕЛО-ШКОЛА -->
+                    <div id="school-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-graduation-cap"></i> Вело-школа</div><div class="grid-list"><div class="item-card"><h5>📚 Основы безопасности</h5><p>ПДД, жесты, защита.</p><span class="badge-small">Бесплатно</span></div><div class="item-card"><h5>🔧 Техническое ТО</h5><p>Ремонт, настройка.</p><span class="badge-small">3 урока</span></div><div class="item-card"><h5>⚡ Гоночная техника</h5><p>Скорость, группа.</p><span class="badge-small">Продвинутый</span></div></div></div></div>
+
+                    <!-- ВЕЛО-ГРУППЫ -->
+                    <div id="groups-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-users"></i> Вело-группы</div><div class="grid-list"><div class="item-card"><h5>🚀 Шоссейная группа</h5><p>34 участника</p></div><div class="item-card"><h5>🌲 MTB-команда</h5><p>42 участника</p></div><div class="item-card"><h5>🏙️ Городские райдеры</h5><p>28 участников</p></div></div></div></div>
+
+                    <!-- БИРЖА МАРШРУТОВ -->
+                    <div id="exchange-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-road"></i> Биржа маршрутов</div><div class="grid-list"><div class="item-card"><h5>🌲 Тайга Трейл</h5><p>45 км | Сложная</p></div><div class="item-card"><h5>🏞️ Велонабережная</h5><p>18 км | Лёгкая</p></div><div class="item-card"><h5>⛰️ Лемью-Парк</h5><p>32 км | Средняя</p></div></div></div></div>
+
+                    <!-- ПОЕЗДКИ С STRAVA БЛОКОМ -->
+                    <div id="trips-page" class="section-page">
+                        <div class="simple-card">
+                            <div class="section-title"><i class="fas fa-bicycle"></i> Мои поездки</div>
+                            <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+                                <button class="btn-spring" style="padding: 6px 15px; font-size: 12px;" onclick="syncStrava()">
+                                    <i class="fab fa-strava"></i> Синхронизировать с Strava
+                                </button>
+                            </div>
+                            <div id="strava-rides">
+                                <div style="text-align: center; padding: 20px;">
+                                    <i class="fas fa-spinner fa-pulse" style="font-size: 32px; color: var(--accent);"></i>
+                                    <p style="margin-top: 10px;">Загрузка данных с маршрута...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- КОНВОИ -->
                     <div id="convoys-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-flag-checkered"></i> Конвои</div><div class="grid-list"><div class="item-card"><h5>🚩 Весенний конвой 2026</h5><p>15 мая | 10:00</p></div><div class="item-card"><h5>🌸 Еженедельная покатушка</h5><p>Каждую субботу</p></div></div></div></div>
+
+                    <!-- СРОЧНЫЕ ЗАЕЗДЫ -->
                     <div id="urgent-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-bolt"></i> Срочные заезды</div><div class="grid-list"><div class="item-card"><h5>🔴 Вело-курьер</h5><p>200 очков</p></div></div></div></div>
-                    <div id="maps-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-map-marked-alt"></i> Карты трасс</div><p>📍 Парк им.Кирова, Лесопарк, набережная</p></div></div>
+
+                    <!-- КАРТЫ ТРАСС -->
+                    <div id="maps-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-map-marked-alt"></i> Карты трасс</div><p>📍 Парк им.Кирова, Лесопарк, набережная, Эжва, Выльгорт</p></div></div>
+
+                    <!-- ГАРАЖ -->
                     <div id="garage-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-warehouse"></i> Гараж</div><p>🚲 Стартовый велосипед</p></div></div>
+
+                    <!-- МАГАЗИН -->
                     <div id="shop-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-store"></i> Магазин</div><div class="grid-list"><div class="item-card"><h5>Шлем "Taiga Carbon"</h5><span class="badge-small">2500 коинов</span></div><div class="item-card"><h5>Джерси "Spring 2026"</h5><span class="badge-small">1500 коинов</span></div></div></div></div>
-                    <div id="ratings-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-chart-line"></i> Рейтинги</div><div class="item-card"><h5>🥇 FuriousPetr</h5><p>3,420 очков</p></div><div class="item-card"><h5>🥈 ElenaBike</h5><p>2,980 очков</p></div></div></div>
+
+                    <!-- РЕЙТИНГИ -->
+                    <div id="ratings-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-chart-line"></i> Рейтинги</div><div class="item-card"><h5>🥇 FuriousPetr</h5><p>3,420 очков</p></div><div class="item-card"><h5>🥈 ElenaBike</h5><p>2,980 очков</p></div></div></div></div>
+
+                    <!-- ФИНАНСЫ -->
                     <div id="finance-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-coins"></i> Финансы</div><p>💰 Баланс: 0 коинов</p></div></div>
+
+                    <!-- МОЙ РАНГ -->
                     <div id="rank-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-medal"></i> Мой ранг</div><div style="text-align:center;"><div class="stat-number-new">1 уровень</div><div class="level-bar"><div class="level-progress" style="width:0%"></div></div><p>0 / 1000 очков</p></div></div></div>
+
+                    <!-- ИНВЕНТАРЬ -->
                     <div id="inventory-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-backpack"></i> Инвентарь</div><div class="item-card"><h5>🚲 Стартовый велосипед</h5></div></div></div>
+
+                    <!-- ВЕЛО-РЕФЕРАЛЫ -->
                     <div id="referrals-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-users"></i> Вело-рефералы</div><p>Приглашено друзей: 0</p><button class="btn-spring" style="margin-top:15px;"><i class="fas fa-share-alt"></i> Пригласить</button></div></div>
+
+                    <!-- ОТЗЫВЫ -->
                     <div id="reviews-page" class="section-page"><div class="simple-card"><div class="section-title"><i class="fas fa-star"></i> Отзывы</div><div class="item-card"><h5>⭐ ⭐ ⭐ ⭐ ⭐</h5><p>"Лучшее сообщество!"</p></div></div></div>
 
                     <!-- ПРОФИЛЬ -->
@@ -866,79 +943,112 @@
     <script>
         // ---------- СИСТЕМА УВЕДОМЛЕНИЙ ----------
         let notifications = [
-            { id: 1, title: "🚴 Весенний конвой 2026", text: "Присоединяйтесь к главному событию сезона 15 мая!", time: "2 часа назад", read: false, icon: "fa-flag-checkered" },
-            { id: 2, title: "🎁 Новые товары в магазине", text: "Добавлена лимитированная коллекция Spring 2026", time: "Вчера", read: false, icon: "fa-store" },
-            { id: 3, title: "🏆 Новый рекорд сезона", text: "FuriousPetr проехал 150 км за один заезд!", time: "Вчера", read: false, icon: "fa-trophy" },
-            { id: 4, title: "⚠️ Погодное предупреждение", text: "Завтра в Сыктывкаре ожидается дождь. Будьте осторожны на трассах.", time: "3 дня назад", read: true, icon: "fa-cloud-rain" },
-            { id: 5, title: "👥 Набор в вело-группы", text: "Шоссейная группа набирает участников. Присоединяйтесь!", time: "5 дней назад", read: true, icon: "fa-users" }
+            { id: 1, title: "🚴 Весенний конвой 2026", text: "Присоединяйтесь 15 мая!", time: "2 часа назад", read: false, icon: "fa-flag-checkered" },
+            { id: 2, title: "🎁 Новые товары", text: "Коллекция Spring 2026", time: "Вчера", read: false, icon: "fa-store" },
+            { id: 3, title: "🏆 Новый рекорд", text: "FuriousPetr проехал 150 км!", time: "Вчера", read: false, icon: "fa-trophy" }
         ];
 
         function updateNotificationBadge() {
             const unreadCount = notifications.filter(n => !n.read).length;
             const badge = document.getElementById('notifBadge');
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-            }
+            if (unreadCount > 0) { badge.textContent = unreadCount; badge.style.display = 'flex'; }
+            else { badge.style.display = 'none'; }
         }
 
         function renderNotifications() {
             const container = document.getElementById('notifList');
             if (!container) return;
-            
-            if (notifications.length === 0) {
-                container.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Нет уведомлений</p></div>';
-                return;
-            }
-            
-            container.innerHTML = notifications.map(notif => `
-                <div class="notif-item ${!notif.read ? 'notif-unread' : ''}" onclick="markNotificationRead(${notif.id})">
-                    <div class="notif-icon"><i class="fas ${notif.icon}"></i></div>
-                    <div class="notif-content">
-                        <div class="notif-title">${notif.title}</div>
-                        <div class="notif-text">${notif.text}</div>
-                        <div class="notif-time"><i class="far fa-clock"></i> ${notif.time}</div>
-                    </div>
-                </div>
-            `).join('');
+            if (notifications.length === 0) { container.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Нет уведомлений</p></div>'; return; }
+            container.innerHTML = notifications.map(notif => `<div class="notif-item ${!notif.read ? 'notif-unread' : ''}" onclick="markNotificationRead(${notif.id})"><div class="notif-icon"><i class="fas ${notif.icon}"></i></div><div class="notif-content"><div class="notif-title">${notif.title}</div><div class="notif-text">${notif.text}</div><div class="notif-time"><i class="far fa-clock"></i> ${notif.time}</div></div></div>`).join('');
             updateNotificationBadge();
         }
 
-        function markNotificationRead(id) {
-            const notif = notifications.find(n => n.id === id);
-            if (notif && !notif.read) {
-                notif.read = true;
-                renderNotifications();
+        function markNotificationRead(id) { const notif = notifications.find(n => n.id === id); if (notif && !notif.read) { notif.read = true; renderNotifications(); } }
+        function markAllRead() { notifications.forEach(n => n.read = true); renderNotifications(); }
+        function addNotification(title, text, icon = 'fa-bell') { notifications.unshift({ id: Date.now(), title, text, time: 'Только что', read: false, icon }); renderNotifications(); }
+
+        // ---------- STRAVA RIDES SYSTEM ----------
+        async function loadStravaRides() {
+            const stravaContainer = document.getElementById('strava-rides');
+            if (!stravaContainer) return;
+            
+            stravaContainer.innerHTML = `<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-pulse" style="font-size: 32px; color: var(--accent);"></i><p style="margin-top: 10px;">Загрузка данных с маршрутов...</p></div>`;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            let rides = JSON.parse(localStorage.getItem('tbk_rides'));
+            if (!rides) {
+                rides = [
+                    { id: 1, name: "Утренняя покатушка по набережной", distance: 18.5, duration: "52 мин", avgSpeed: 21.3, date: "2 мая 2026", elevation: 45, icon: "fa-sun" },
+                    { id: 2, name: "Тайга Трейл", distance: 45.2, duration: "2ч 15м", avgSpeed: 20.1, date: "28 апреля 2026", elevation: 320, icon: "fa-tree" },
+                    { id: 3, name: "Лемью-Парк", distance: 32.8, duration: "1ч 48м", avgSpeed: 18.2, date: "25 апреля 2026", elevation: 185, icon: "fa-mountain" },
+                    { id: 4, name: "Городской спринт", distance: 12.3, duration: "34 мин", avgSpeed: 21.7, date: "20 апреля 2026", elevation: 28, icon: "fa-city" }
+                ];
+                localStorage.setItem('tbk_rides', JSON.stringify(rides));
+            }
+            
+            const totalDistance = rides.reduce((sum, r) => sum + r.distance, 0).toFixed(1);
+            const avgSpeedAll = (rides.reduce((sum, r) => sum + r.avgSpeed, 0) / rides.length).toFixed(1);
+            
+            stravaContainer.innerHTML = `
+                <div class="strava-rides-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                        <span><i class="fas fa-chart-line"></i> <strong>Всего:</strong> ${totalDistance} км</span>
+                        <span><i class="fas fa-tachometer-alt"></i> <strong>Средняя скорость:</strong> ${avgSpeedAll} км/ч</span>
+                        <span><i class="fas fa-clock"></i> <strong>Поездок:</strong> ${rides.length}</span>
+                    </div>
+                    ${rides.map(ride => `
+                        <div class="ride-item">
+                            <div class="ride-header">
+                                <div class="ride-icon"><i class="fas ${ride.icon}"></i></div>
+                                <div class="ride-info">
+                                    <div class="ride-name">${ride.name}</div>
+                                    <div class="ride-stats">
+                                        <span><i class="fas fa-calendar-alt"></i> ${ride.date}</span>
+                                        <span><i class="fas fa-road"></i> ${ride.distance} км</span>
+                                        <span><i class="fas fa-clock"></i> ${ride.duration}</span>
+                                        <span><i class="fas fa-tachometer-alt"></i> ${ride.avgSpeed} км/ч</span>
+                                        <span><i class="fas fa-mountain"></i> ${ride.elevation} м</span>
+                                    </div>
+                                </div>
+                                <button class="badge-small" onclick="viewRideDetails(${ride.id})" style="cursor: pointer;">Детали →</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function viewRideDetails(rideId) {
+            const rides = JSON.parse(localStorage.getItem('tbk_rides')) || [];
+            const ride = rides.find(r => r.id === rideId);
+            if (ride) {
+                alert(`📊 Детали поездки "${ride.name}":\n\n📅 Дата: ${ride.date}\n📏 Дистанция: ${ride.distance} км\n⏱️ Время: ${ride.duration}\n⚡ Средняя скорость: ${ride.avgSpeed} км/ч\n🏔️ Набор высоты: ${ride.elevation} м\n\n⭐ Очки за поездку: +${Math.round(ride.distance * 2)}`);
+                addNotification('🏆 Новая активность', `Просмотр деталей поездки "${ride.name}"`, 'fa-bicycle');
             }
         }
 
-        function markAllRead() {
-            notifications.forEach(n => n.read = true);
-            renderNotifications();
+        function syncStrava() {
+            const stravaContainer = document.getElementById('strava-rides');
+            stravaContainer.innerHTML = `<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-pulse" style="font-size: 32px; color: var(--accent);"></i><p style="margin-top: 10px;">Синхронизация с Strava...</p></div>`;
+            setTimeout(() => {
+                const rides = JSON.parse(localStorage.getItem('tbk_rides')) || [];
+                const newRide = {
+                    id: Date.now(),
+                    name: ["Вечерняя покатушка", "Восход на байке", "Лесной маршрут", "Спринт до парка"][Math.floor(Math.random() * 4)],
+                    distance: (Math.random() * 30 + 10).toFixed(1),
+                    duration: `${Math.floor(Math.random() * 90 + 20)} мин`,
+                    avgSpeed: (Math.random() * 10 + 15).toFixed(1),
+                    date: new Date().toLocaleDateString('ru-RU'),
+                    elevation: Math.floor(Math.random() * 200 + 20),
+                    icon: ["fa-moon", "fa-sun", "fa-cloud-sun", "fa-bicycle"][Math.floor(Math.random() * 4)]
+                };
+                rides.unshift(newRide);
+                localStorage.setItem('tbk_rides', JSON.stringify(rides.slice(0, 10)));
+                loadStravaRides();
+                addNotification('✅ Синхронизация завершена', `Добавлена новая активность: ${newRide.name} (${newRide.distance} км)`, 'fa-strava');
+            }, 2000);
         }
-
-        // Добавление нового уведомления
-        function addNotification(title, text, icon = 'fa-bell') {
-            const newNotif = {
-                id: Date.now(),
-                title: title,
-                text: text,
-                time: 'Только что',
-                read: false,
-                icon: icon
-            };
-            notifications.unshift(newNotif);
-            renderNotifications();
-        }
-
-        // Тестовые уведомления (примеры)
-        setTimeout(() => {
-            if (document.getElementById('dashboard').style.display === 'block') {
-                addNotification('🌟 Добро пожаловать в TBK!', 'Рады видеть вас в сообществе. Начните с раздела "Вело-школа"', 'fa-hand-peace');
-            }
-        }, 3000);
 
         // ---------- СИСТЕМА РЕГИСТРАЦИИ И ВХОДА ----------
         let currentUser = null;
@@ -1089,6 +1199,7 @@
             
             runSpringIntro();
             renderNotifications();
+            setTimeout(() => loadStravaRides(), 500);
         }
 
         function logout() {
@@ -1139,15 +1250,9 @@
             });
         });
 
-        // Колокольчик
         const bellIcon = document.getElementById('bellIcon');
         const notifPanel = document.getElementById('notificationsPanel');
-        if (bellIcon) {
-            bellIcon.addEventListener('click', (e) => {
-                e.stopPropagation();
-                notifPanel.classList.toggle('show');
-            });
-        }
+        if (bellIcon) bellIcon.addEventListener('click', (e) => { e.stopPropagation(); notifPanel.classList.toggle('show'); });
 
         const userBtn = document.getElementById('userInfoBtn');
         const dropdown = document.getElementById('profileDropdown');
